@@ -149,7 +149,7 @@ class AuthenticationService:
         )
 
         refresh_session = self._refresh_session_factory.from_refresh_token(
-            new_access_token.value
+            new_refresh_token.value
         )
 
         self._refresh_session_gateway.add(refresh_session)
