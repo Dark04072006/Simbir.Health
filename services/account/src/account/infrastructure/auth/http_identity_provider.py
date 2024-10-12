@@ -1,35 +1,29 @@
 from uuid import UUID
 
-from fastapi import Request
-
 from account.application.errors import AuthenticationError
 from account.application.models import JwtToken, User, UserRole
 from account.application.ports.auth.identity_provider import IdentityProvider
 from account.application.ports.auth.jwt_token_provider import JwtTokenProvider
 from account.application.ports.data.user_gateway import UserGateway
 from account.infrastructure.auth.auth_config import AuthConfig
+from account.infrastructure.auth.auth_token_gettable import AuthTokenGettable
 
 
 class HttpIdentityProvider(IdentityProvider):
     def __init__(
         self,
-        http_request: Request,
         auth_config: AuthConfig,
         user_gateway: UserGateway,
         jwt_token_provider: JwtTokenProvider,
+        auth_token_gettable: AuthTokenGettable,
     ) -> None:
-        self._http_request = http_request
         self._auth_config = auth_config
         self._user_gateway = user_gateway
         self._jwt_token_provider = jwt_token_provider
+        self._auth_token_gettable = auth_token_gettable
 
     def _introspect(self) -> JwtToken:
-        token = self._http_request.headers.get("Authorization")
-
-        if token is None or not token.startswith("Bearer "):
-            raise AuthenticationError("Not authenticated")
-
-        token = token.replace("Bearer ", "")
+        token = self._auth_token_gettable.get_auth_token()
 
         return self._jwt_token_provider.validate(token)
 

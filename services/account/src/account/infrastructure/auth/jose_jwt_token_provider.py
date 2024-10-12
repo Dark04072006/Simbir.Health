@@ -43,11 +43,12 @@ class JoseJwtTokenProvider(JwtTokenProvider):
         )
 
     def create_access_token(self, payload: TokenPayload) -> JwtToken:
+        now = self._clock.now()
         to_encode = {
             "user_id": str(payload.user_id),
             "roles": [role.value for role in payload.roles],
-            "iat": self._clock.now(),
-            "exp": self._clock.now() + self._auth_config.access_expiration,
+            "iat": int(now.timestamp()),
+            "exp": int((now + self._auth_config.access_expiration).timestamp()),
         }
 
         token = jwt.encode(
@@ -57,16 +58,17 @@ class JoseJwtTokenProvider(JwtTokenProvider):
         return JwtToken(
             value=token,
             payload=payload,
-            expires_in=to_encode["exp"],
-            created_at=to_encode["iat"],
+            expires_in=now + self._auth_config.access_expiration,
+            created_at=now,
         )
 
     def create_refresh_token(self, payload: TokenPayload) -> JwtToken:
+        now = self._clock.now()
         to_encode = {
             "user_id": str(payload.user_id),
             "roles": [role.value for role in payload.roles],
-            "iat": self._clock.now(),
-            "exp": self._clock.now() + self._auth_config.refresh_expiration,
+            "iat": int(now.timestamp()),
+            "exp": int((now + self._auth_config.refresh_expiration).timestamp()),
         }
 
         token = jwt.encode(
@@ -76,6 +78,6 @@ class JoseJwtTokenProvider(JwtTokenProvider):
         return JwtToken(
             value=token,
             payload=payload,
-            expires_in=to_encode["exp"],
-            created_at=to_encode["iat"],
+            expires_in=now + self._auth_config.refresh_expiration,
+            created_at=now,
         )

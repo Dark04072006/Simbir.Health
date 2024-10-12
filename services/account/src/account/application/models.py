@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
 from uuid import UUID, uuid4
 
@@ -27,7 +27,7 @@ class RefreshSession:
     id: UUID = field(default_factory=uuid4)
     user_id: UUID
     refresh_token: str
-    expires_in: timedelta
+    expires_in: datetime
     created_at: datetime
 
 
@@ -41,5 +41,5 @@ class TokenPayload:
 class JwtToken:
     value: str
     payload: TokenPayload
-    expires_in: timedelta
+    expires_in: datetime
     created_at: datetime

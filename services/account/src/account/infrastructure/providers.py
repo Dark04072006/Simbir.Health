@@ -31,6 +31,7 @@ from account.application.ports.factory.user_factory import UserFactory
 from account.application.services.account_service import AccountService
 from account.application.services.authentication_service import AuthenticationService
 from account.infrastructure.auth.auth_config import AuthConfig
+from account.infrastructure.auth.auth_token_gettable import AuthTokenGettable
 from account.infrastructure.auth.http_identity_provider import (
     HttpIdentityProvider,
 )
@@ -40,10 +41,9 @@ from account.infrastructure.auth.jose_jwt_token_provider import (
 from account.infrastructure.auth.passlib_password_service import (
     PasslibPasswordService,
 )
-from account.infrastructure.factory.refresh_session_factory import (
+from account.infrastructure.auth.refresh_session_factory import (
     RefreshSessionFactoryImpl,
 )
-from account.infrastructure.factory.user_factory import UserFactoryImpl
 from account.infrastructure.persistence.account_reader import (
     SqlalchemyAccountReader,
 )
@@ -53,7 +53,9 @@ from account.infrastructure.persistence.data_mappers.refresh_session_mapper impo
 from account.infrastructure.persistence.data_mappers.user_mapper import (
     UserMapper,
 )
+from account.infrastructure.user_factory import UserFactoryImpl
 from account.infrastructure.utc_clock import UTCClock
+from account.presentation.auth import FastAPIAuthTokenGettable
 
 type ConnectionString = str
 
@@ -128,6 +130,11 @@ class AuthProvider(Provider):
         PasslibPasswordService,
         scope=Scope.APP,
         provides=PasswordService,
+    )
+    auth_token_gettable = provide(
+        FastAPIAuthTokenGettable,
+        scope=Scope.REQUEST,
+        provides=AuthTokenGettable,
     )
 
     @provide(scope=Scope.APP)

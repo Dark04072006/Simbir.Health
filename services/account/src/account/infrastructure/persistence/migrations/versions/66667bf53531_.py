@@ -32,7 +32,7 @@ def upgrade() -> None:
         sa.Column(
             "roles",
             postgresql.ARRAY(
-                sa.Enum("user", "admin", "doctor", "manager", name="userrole")
+                sa.Enum("USER", "ADMIN", "DOCTOR", "MANAGER", name="userrole")
             ),
             nullable=True,
         ),
