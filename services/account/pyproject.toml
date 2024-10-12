@@ -1,0 +1,74 @@
+[project]
+name = "Simbir.Health"
+authors = [{ name = "Abrekov Alim", email = "Abrekovalim38702@gmail.com" }]
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx",
+    "fastapi",
+    "uvicorn",
+    "psycopg",
+    "dishka",
+    "passlib",
+    "alembic",
+    "sqlalchemy",
+    "python-jose",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff",
+  "mypy",
+  "pytest",
+  "httpx",
+  "pre-commit",
+]
+
+[tool.pytest.init_options]
+filterwarnings = [
+  "ignore::DeprecationWarning",
+]
+pythonpath = [
+  "src",
+]
+testpaths = [
+  "tests",
+]
+
+[tool.ruff]
+line-length = 85
+target-version="py312"
+src = ["src"]
+include = ["src/**.py", "tests/**.py"]
+
+[tool.ruff.lint]
+ignore = [
+   "ARG",
+   "ANN",
+   "D",
+   "EM101",
+   "EM102",
+   "PT001",
+   "PT023",
+   "SIM108",
+   "SIM114",
+   "TRY003",
+   "PLW2901",
+   "RET505",
+   "PLR0913",
+   "UP038",
+   "TCH001",
+   "SLF001",
+   "COM812",
+   "ISC001",
+   "S101",
+]
+select = [
+  "ALL",
+]
+
+[tool.ruff.lint.isort]
+no-lines-before = ["local-folder"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "parents"

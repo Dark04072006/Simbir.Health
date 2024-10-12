@@ -1,0 +1,28 @@
+services:
+  api:
+    build: .
+    command:
+      - sh
+      - -c
+      - "alembic upgrade head && uvicorn account.bootstrap:bootstrap --factory --host 0.0.0.0 --port 8081"
+    environment:
+      - JWT_SECRET=secret
+      - ACCESS_TOKEN_EXPIRATION=3600
+      - REFRESH_TOKEN_EXPIRATION=86400
+      - DB_CONNECTION_STRING=postgresql+psycopg://postgres:postgres@postgresql:5432/postgres
+
+    depends_on:
+      - postgresql
+
+    ports:
+      - "8081:8081"
+
+  postgresql:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+
+    ports:
+      - "5432:5432"
